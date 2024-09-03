@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Virtual Try-On Extension",
+  "version": "1.0",
+  "description": "Try on clothes virtually using Kolors Virtual Try-On API",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "host_permissions": [
+    "https://kwai-kolors-kolors-virtual-try-on.hf.space/*",
+    "https://api.openai.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "logo.png",
+      "48": "logo.png",
+      "128": "logo.png"
+    }
+  },
+  "icons": {
+    "16": "logo.png",
+    "48": "logo.png",
+    "128": "logo.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}

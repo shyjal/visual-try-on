@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Virtual Try-On</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      width: 400px;
+      height: 500px;
+      padding: 20px;
+      font-family: 'Inter', sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    h2 {
+      color: #333;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    #personImage {
+      display: none;
+    }
+    #cachedImages {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .cached-image, #uploadNewImage {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 5px;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+    .cached-image.selected {
+      border-color: #3498db;
+    }
+    #uploadNewImage {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #3498db;
+      color: white;
+      font-size: 24px;
+      transition: background-color 0.3s;
+      position: relative;
+    }
+    #uploadNewImage:hover {
+      background-color: #2980b9;
+    }
+    #uploadNewImage:hover::after {
+      content: "Upload new person";
+      position: absolute;
+      bottom: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #333;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 3px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    button, input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      background-color: #2ecc71;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+    }
+    button:hover {
+      background-color: #27ae60;
+    }
+    button:disabled {
+      background-color: #95a5a6;
+      cursor: not-allowed;
+    }
+    input[type="text"] {
+      background-color: white;
+      color: #333;
+      border: 1px solid #eee;
+      cursor: text;
+      width: auto;
+    }
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #27ae60;
+      box-shadow: 0 0 0 2px rgba(46, 204, 113, 0.2);
+    }
+    .loader {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #3498db;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+      display: none;
+    }
+    #loadingMessage {
+      text-align: center;
+      color: #7f8c8d;
+      margin-top: 10px;
+      display: none;
+    }
+    #result {
+      margin-top: 20px;
+      text-align: center;
+    }
+    #result img {
+      max-width: 100%;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .image-container {
+      position: relative;
+      width: 60px;
+      height: 60px;
+    }
+    .delete-btn {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      font-size: 14px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .image-container:hover .delete-btn {
+      opacity: 1;
+    }
+    #settingsForm {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    #settingsForm label {
+      margin-bottom: 5px;
+      color: #333;
+    }
+    #settingsButton {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 24px;
+      color: #333;
+      width: auto;
+    }
+
+    #settingsButton:hover {
+      color: #3498db;
+    }
+  </style>
+</head>
+<body>
+  <h2>Virtual Try-On 🧢</h2>
+  <button id="settingsButton" aria-label="Settings">⚙️</button>
+  <div id="mainContent">
+    <div id="cachedImages">
+      <!-- Cached images will be inserted here -->
+    </div>
+    <button id="tryOn" disabled>Try On</button>
+    <div id="loader" class="loader"></div>
+    <div id="loadingMessage">It may take around 30s to dress up the person</div>
+    <div id="result"></div>
+    <input type="file" id="personImage" accept="image/*" style="display: none;">
+  </div>
+ 
+  <div id="settingsContent" style="display: none;">
+    <h2>Settings</h2>
+    <form id="settingsForm">
+      <label for="openAIApiKey">OpenAI API Key:</label>
+      <input type="text" id="openAIApiKey" name="openAIApiKey"><br><br>
+      <label for="cloudName">Cloudinary Cloud Name:</label>
+      <input type="text" id="cloudName" name="cloudName"><br><br>
+      <label for="uploadPreset">Cloudinary Upload Preset:</label>
+      <input type="text" id="uploadPreset" name="uploadPreset"><br><br>
+      <button id="saveSettings" type="submit">Save</button>
+    </form>
+  </div>
+  <script src="utils.js"></script>
+  <script src="settings.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
