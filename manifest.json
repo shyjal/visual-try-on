@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Virtual Try-On Extension",
+  "name": "Virtual Try On Clothes",
   "version": "1.0",
-  "description": "Try on clothes virtually using Kolors Virtual Try-On API",
+  "description": "Try on clothes virtually on any ecommerce store",
   "permissions": ["activeTab", "scripting", "storage"],
   "host_permissions": [
     "https://kwai-kolors-kolors-virtual-try-on.hf.space/*",

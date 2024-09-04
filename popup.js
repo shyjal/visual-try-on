@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function showError(message) {
     loader.style.display = 'none';
     loadingMessage.style.display = 'none';
-    resultDiv.textContent = message;
+    resultDiv.innerHTML = message;
     tryOnButton.disabled = false;
   }
 
@@ -223,13 +223,19 @@ document.addEventListener('DOMContentLoaded', function () {
       },
       body: JSON.stringify(payload),
     })
-      .then((response) => response.json())
-      .then((data) => {
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Error: ' + response.status);
+        }
+        const data = response.json();
         const eventId = data.event_id;
+
         listenForResult(eventId, productImageUrl, currentPageUrl);
       })
       .catch((error) => {
-        showError('Error: ' + error.message);
+        showError(
+          'Could not do virtual try-on because kolors is busy,<br/> Please try again or use <a href="https://huggingface.co/spaces/Kwai-Kolors/Kolors-Virtual-Try-On" target="_blank">Huggingface space</a> directly.'
+        );
         console.error('Error in virtual try-on process:', error);
       });
   }
@@ -271,11 +277,15 @@ document.addEventListener('DOMContentLoaded', function () {
                   }
                   displayResult(resultUrl);
                 } else {
-                  showError('Error in virtual try-on process.');
+                  showError(
+                    'Could not do virtual try-on because kolors is busy,<br/> Please try again or use <a href="https://huggingface.co/spaces/Kwai-Kolors/Kolors-Virtual-Try-On" target="_blank">Huggingface space</a> directly.'
+                  );
                 }
                 return;
               } else if (event === 'error') {
-                showError('Error in virtual try-on process.');
+                showError(
+                  'Could not do virtual try-on because kolors is busy,<br/> Please try again or use <a href="https://huggingface.co/spaces/Kwai-Kolors/Kolors-Virtual-Try-On" target="_blank">Huggingface space</a> directly.'
+                );
                 return;
               }
             }
