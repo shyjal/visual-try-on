@@ -21,12 +21,17 @@ Check out this video demonstration of the Virtual Try-On Chrome Extension:
 - Utilizes the Kolors model on Hugging Face via Gradio API
 - Stores person and result images in browser cache for improved usability
 
-## Installation
+## Non-Technical Extension
+
+I will soon release an official ready-to-use extension for non-technical people. Please fill out https://tally.so/r/mYYjoz to get notified about the release.
+
+## Technical Installation of Extension
 
 1. Clone this repository or download the source code
 2. Open Chrome and navigate to `chrome://extensions/`
 3. Enable "Developer mode" in the top right corner
 4. Click "Load unpacked" and select the directory containing the extension files
+5. Set up the OpenAI and Cloudinary keys
 
 ## Setup
 

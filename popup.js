@@ -227,10 +227,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!response.ok) {
           throw new Error('Error: ' + response.status);
         }
-        const data = response.json();
-        const eventId = data.event_id;
-
-        listenForResult(eventId, productImageUrl, currentPageUrl);
+        response.json().then((data) => {
+          const eventId = data.event_id;
+          listenForResult(eventId, productImageUrl, currentPageUrl);
+        });
       })
       .catch((error) => {
         showError(
