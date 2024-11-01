@@ -1,27 +1,43 @@
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.action === 'getProductImage') {
-    getProductImageUrl(request.openAIApiKey).then(sendResponse);
+    getProductImageUrl(request.openAIApiKey, request.openAIApi).then(sendResponse);
     return true; // Indicates we will send a response asynchronously
   }
 });
 
-async function getProductImageUrl(openAIApiKey) {
+async function getProductImageUrl(openAIApiKey, openAIApi) {
+  if (location.href.indexOf("taobao.com") !== -1 || location.href.indexOf("tmall.com") !== -1) {
+    // 选择所有元素
+    const url = document.querySelector("[class^='mainPicWrap--']").querySelector("img").src;
+    return new Promise((resolve, reject) => {
+      // 假设异步操作成功，调用resolve
+      //resolve({productImageUrl: url});
+      resolve({productImageUrl: url.replace("_.webp", "")});
+    });
+  }
+
+  var imgEles = document.querySelectorAll("img");
+  if (imgEles.length === 1) {
+      return new Promise((resolve, reject) => {
+        resolve({productImageUrl: imgEles[0].src});
+      });
+  }
+
   const htmlContent = document.documentElement.outerHTML;
   const productImageUrl = await getProductImageFromGPT(
     htmlContent,
-    openAIApiKey
+    openAIApiKey,
+    openAIApi
   );
   return { productImageUrl };
 }
 
-async function getProductImageFromGPT(htmlContent, openAIApiKey) {
+async function getProductImageFromGPT(htmlContent, openAIApiKey, apiUrl) {
   console.log('getProductImageFromGPT', openAIApiKey, !openAIApiKey);
   if (!openAIApiKey) {
     console.error('OpenAI API key not provided');
     return null;
   }
-
-  const apiUrl = 'https://api.openai.com/v1/chat/completions';
 
   const prompt = `
     Analyze the following HTML content and extract the URL of the main product image.
