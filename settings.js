@@ -3,16 +3,18 @@ document
   .addEventListener('submit', function (e) {
     e.preventDefault();
     const openAIApiKey = document.getElementById('openAIApiKey').value;
-    const cloudName = document.getElementById('cloudName').value;
-    const uploadPreset = document.getElementById('uploadPreset').value;
+    const openAIApi = document.getElementById('openAIApi').value;
+    //const cloudName = document.getElementById('cloudName').value;
+    //const uploadPreset = document.getElementById('uploadPreset').value;
 
     localStorage.setItem('openAIApiKey', openAIApiKey);
-    localStorage.setItem('cloudName', cloudName);
-    localStorage.setItem('uploadPreset', uploadPreset);
+    localStorage.setItem('openAIApi', openAIApi);
+    //localStorage.setItem('cloudName', cloudName);
+    //localStorage.setItem('uploadPreset', uploadPreset);
 
     document.getElementById('saveSettings').innerHTML = 'Saved';
     setTimeout(() => {
-      if (openAIApiKey && cloudName && uploadPreset) {
+      if (openAIApiKey) { // && cloudName && uploadPreset) {
         hideSettings();
       }
     }, 1000);
@@ -22,8 +24,10 @@ document
 document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('openAIApiKey').value =
     localStorage.getItem('openAIApiKey') || '';
-  document.getElementById('cloudName').value =
-    localStorage.getItem('cloudName') || '';
-  document.getElementById('uploadPreset').value =
-    localStorage.getItem('uploadPreset') || '';
+  document.getElementById('openAIApi').value =
+    localStorage.getItem('openAIApi') || '';
+  //document.getElementById('cloudName').value =
+    //localStorage.getItem('cloudName') || '';
+  //document.getElementById('uploadPreset').value =
+    //localStorage.getItem('uploadPreset') || '';
 });
